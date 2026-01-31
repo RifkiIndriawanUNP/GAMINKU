@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>gaminku</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo" onclick="showSection('home')">
+            <h1 class="header-title" onclick="showSection('home')">GAMINKU</h1>
+        </div>
+        
+        <div class="nav-links">
+            <a href="#" class="nav-link" onclick="showSection('home')">
+                <i class="fas fa-none"></i> Home
+            </a>
+            <a href="#" class="nav-link" onclick="loadGames('popular'); showSection('games')">
+                <i class="fas fa-none"></i> Popular
+            </a>
+            <a href="#" class="nav-link" onclick="loadGames('highest-rated'); showSection('games')">
+                <i class="fas fa-none"></i> Highest Rated
+            </a>
+            <a href="#" class="nav-link" onclick="loadGames('upcoming'); showSection('games')">
+                <i class="fas fa-none"></i> Upcoming
+            </a>
+            <a href="#" class="nav-link" onclick="showSection('platforms')">
+                <i class="fas fa-none"></i> Platforms
+            </a>
+            <a href="#" class="nav-link" onclick="showSection('az-games')">
+                <i class="fas fa-none"></i> A-Z
+            </a>
+            <a href="#" class="nav-link" onclick="showSection('about')">
+                <i class="fas fa-info-none"></i> About
+            </a>
+        </div>
+        <div class="navbar-right-section">
+            <!-- Auth Buttons (tampil saat belum login) -->
+            <div class="auth-buttons" id="authButtons">
+                <button class="btn btn-primary" onclick="showModal('login')">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+                <button class="btn btn-secondary" onclick="showModal('register')">
+                    <i class="fas fa-user-plus"></i> Register
+                </button>
+            </div>
+            
+            <!-- User Info (tampil saat sudah login) -->
+            <div class="user-info-nav" id="userInfoNav" style="display: none;">
+                    <img id="navAvatar" class="avatar" src="https://assetsio.gnwcdn.com/skyrim_BSfBttf.jpg?width=1200&height=1200&fit=crop&quality=100&format=png&enable=upscale&auto=webp" alt="Avatar" onclick="showSection('profile')">
+                    <span id="navUsername"onclick="showSection('profile')">User</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Home Section -->
+    <section id="home" class="section active">
+        <!-- Banner Full Width -->
+        <div class="banner-hero-full">
+            <div class="banner-overlay">
+                <div class="banner-content">
+                    <h1 class="banner-title">Discover Your Next Games</h1>
+                    <p class="banner-subtitle">Saatnya menemukan game berikutnya! Jelajahi game terbaik dari seluruh platform, mulai dari game paling populer, rating tertinggi, hingga game yang akan rilis di masa mendatang.</p>
+                    
+                    <div class="search-box banner-search">
+                        <input type="text" id="searchInput" class="search-input" placeholder="Search games by name...">
+                        <button class="btn btn-primary" onclick="searchGames()">
+                            <i class="fas fa-search"></i> Search
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search Results -->
+        <div id="searchResultsSection" class="search-results" style="display: none;">
+            <div class="games-section">
+                <div class="section-header">
+                    <h3 id="searchResultsTitle">Search Results</h3>
+                    <button class="btn btn-secondary" onclick="clearSearch()">
+                        <i class="fas fa-times"></i> Clear Search
+                    </button>
+                </div>
+                <div id="searchResultsGrid" class="games-grid"></div>
+                <div id="searchLoading" class="spinner"></div>
+            </div>
+        </div>
+        
+        <!-- Home Default Message -->
+        <div id="homeDefaultMessage" class="home-default">
+            <div class="home-default-content">
+                <i class="fas fa-search fa-4x"></i>
+                <h3>Start Your Search</h3>
+                <p>Enter a game title in the search bar above to begin your discovery</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Games Section -->
+    <section id="games" class="section">
+        <div class="section-header">
+            <h2 id="gamesTitle">Popular Games</h2>
+        </div>
+
+        <div class="games-section">
+            <div id="gamesGrid" class="games-grid"></div>
+            <div id="gamesLoading" class="spinner"></div>
+        </div>
+    </section>
+
+    <!-- Platforms Section -->
+    <section id="platforms" class="section">
+        <div class="section-header">
+            <h2>Browse by Platform</h2>
+            <p>Select a platform to view games</p>
+        </div>
+
+        <div class="platform-grid">
+            <div class="platform-card" onclick="loadPlatformGames('pc')">
+                <i class="fab fa-windows"></i>
+                <h4>PC Games</h4>
+                <p>Windows/Mac/Linux</p>
+            </div>
+            <div class="platform-card" onclick="loadPlatformGames('playstation')">
+                <i class="fab fa-playstation"></i>
+                <h4>PlayStation</h4>
+                <p>PS5/PS4/PS3</p>
+            </div>
+            <div class="platform-card" onclick="loadPlatformGames('xbox')">
+                <i class="fab fa-xbox"></i>
+                <h4>Xbox</h4>
+                <p>Series X/One/360</p>
+            </div>
+            <div class="platform-card" onclick="loadPlatformGames('nintendo')">
+                <i class="fas fa-gamepad"></i>
+                <h4>Nintendo</h4>
+                <p>Switch/Wii U/Wii</p>
+            </div>
+            <div class="platform-card" onclick="loadPlatformGames('mobile')">
+                <i class="fas fa-mobile-alt"></i>
+                <h4>Mobile</h4>
+                <p>iOS/Android</p>
+            </div>
+        </div>
+
+        <!-- Platform Games -->
+        <div id="platformGamesSection" class="platform-games" style="display: none;">
+            <div class="games-section">
+                <div class="section-header">
+                    <h3 id="platformTitle">Platform Games</h3>
+                </div>
+                <div id="platformGamesGrid" class="games-grid"></div>
+                <div id="platformLoading" class="spinner"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- A-Z Games Section -->
+    <section id="az-games" class="section">
+        <div class="section-header">
+            <h2>Games A-Z</h2>
+            <p>Browse games alphabetically by first letter</p>
+        </div>
+
+        <!-- Alphabet Navigation -->
+        <div class="alphabet-nav">
+            <div class="alphabet-grid" id="alphabetGrid"></div>
+        </div>
+
+        <!-- Selected Letter Info -->
+        <div class="selected-letter-info">
+            <h3 id="selectedLetterTitle">Select a letter above</h3>
+            <p id="selectedLetterCount">-</p>
+        </div>
+
+        <div class="games-list-container">
+            <div id="azGamesList" class="games-list"></div>
+            <div id="azGamesLoading" class="spinner"></div>
+            <p id="noAZGames" class="no-data">Select a letter above to view games</p>
+        </div>
+    </section>
+
+    <!-- Game Details Section -->
+    <section id="game-details" class="section">
+        <div class="game-details-container">
+            <!-- Content will be loaded by JavaScript -->
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="section">
+        <div class="about-single-container">
+            <div class="about-box">
+                <div class="about-box-header">
+                    <h2><i class="fas fa-info-circle"></i> About gaminku</h2>
+                </div>
+                
+                <div class="about-content">
+                    <p>
+                        gaminku adalah platform pencarian dan database game yang dikembangkan oleh 
+                        Mohammad Rifki Indriawan (NIM: 20240040102). Platform ini menggunakan 
+                        RAWG Video Games Database API untuk menyediakan informasi lengkap tentang 
+                        ribuan game dari berbagai platform dan genre.
+                    </p>
+                    
+                    <p>
+                        Pengguna dapat mencari game berdasarkan nama, melihat detail lengkap termasuk rating, 
+                        platform, genre, dan screenshot, menyimpan game ke dalam daftar favorit dan wishlist, 
+                        serta menelusuri game berdasarkan huruf pertama nama melalui fitur A-Z.
+                    </p>
+                    
+                    <p>
+                        Proyek ini dibuat sebagai implementasi pembelajaran pengembangan web full-stack dengan 
+                        teknologi modern seperti <strong>Node.js, Express.js, MySQL</strong>, dan integrasi API eksternal.
+                    </p>
+                    
+                    <div class="creator-info">
+
+                    <div class="info-grid">
+                        <div><strong>Nama:</strong> <span>Mohammad Rifki Indriawan</span></div>
+                        <div><strong>NIM:</strong> <span>20240040102</span></div>
+                        <div><strong>API Source:</strong> <span>RAWG.io</span></div>
+                        <div>
+                            <strong>Github:</strong>
+                            <span>
+                                <a href="https://github.com/RifkiIndriawanUNP/GAMINKU" target="_blank" style="color: #e5e7eb; text-decoration: none;">
+                                    https://github.com/RifkiIndriawanUNP/GAMINKU
+                                </a>
+                            </span>
+                        </div>
+                    </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Profile Section -->
+    <section id="profile" class="section">
+        <div class="profile-section">
+            <!-- Profile Header -->
+            <div class="profile-header">
+                <img id="profileAvatar" class="profile-avatar" src="https://assetsio.gnwcdn.com/skyrim_BSfBttf.jpg?width=1200&height=1200&fit=crop&quality=100&format=png&enable=upscale&auto=webp" alt="Avatar">
+                <div class="user-info">
+                    <h3 id="profileUsername">Guest Mode</h3>
+                    <p id="profileEmail">Register to make a profile</p>
+                    <p><i class="fas fa-calendar-alt"></i> Joined: <span id="profileJoinDate">-</span></p>
+                </div>
+            </div>
+
+            <!-- Profile Tabs -->
+            <div class="profile-tabs">
+                <button class="tab-btn active" onclick="showProfileTab('favorites')">
+                    <i class="fas fa-heart"></i> Favorites
+                </button>
+                <button class="tab-btn" onclick="showProfileTab('wishlist')">
+                    <i class="fas fa-star"></i> Wishlist
+                </button>
+                <button class="tab-btn" onclick="showProfileTab('recentlyViewed')">
+                    <i class="fas fa-history"></i> Recently Viewed
+                </button>
+                <button class="tab-btn" onclick="showProfileTab('settings')">
+                    <i class="fas fa-cog"></i> Settings
+                </button>
+                <button class="tab-btn" id="adminTabBtn" onclick="showProfileTab('admin')" style="display: none;">
+                    <i class="fas fa-shield-alt"></i> Admin
+                </button>
+            </div>
+
+            <!-- Tabs Content -->
+            <div id="favoritesTab" class="profile-tab-content active">
+                <div class="tab-header">
+                    <h3>Your Favorite Games</h3>
+                </div>
+                <div id="favoritesList" class="games-grid"></div>
+                <p id="noFavorites" class="no-data">No favorite games yet.</p>
+            </div>
+
+            <div id="wishlistTab" class="profile-tab-content">
+                <div class="tab-header">
+                    <h3>Your Wishlist</h3>
+                </div>
+                <div id="wishlistList" class="games-grid"></div>
+                <p id="noWishlist" class="no-data">Your wishlist is empty.</p>
+            </div>
+
+            <div id="recentlyViewedTab" class="profile-tab-content">
+                <div class="tab-header">
+                    <h3>Recently Viewed Games</h3>
+                    <button class="btn btn-danger" onclick="clearRecentlyViewed()">
+                        <i class="fas fa-trash"></i> Clear All
+                    </button>
+                </div>
+                <div id="recentlyViewedList" class="games-grid"></div>
+                <p id="noRecentlyViewed" class="no-data">No recently viewed games.</p>
+            </div>
+
+            <div id="settingsTab" class="profile-tab-content">
+                <h3>Account Settings</h3>
+                <div class="settings-form">
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" id="editUsername" class="form-control" placeholder="Username">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="editEmail" class="form-control" placeholder="Email">
+                    </div>
+                    <div class="form-group">
+                        <label>Avatar URL</label>
+                        <input type="text" id="editAvatar" class="form-control" placeholder="https://example.com/avatar.jpg">
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button class="btn btn-primary" onclick="updateProfile()" id="updateProfileBtn">
+                            <i class="fas fa-save"></i> Update Profile
+                        </button>
+                        <button class="btn btn-danger" onclick="logout()" style="margin-left: 1rem;">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                        <button class="btn btn-danger" onclick="deleteAccount()" style="margin-left: 1rem;">
+                            <i class="fas fa-trash"></i> Delete Account
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Tab -->
+            <div id="adminTab" class="profile-tab-content"></div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <h4>gaminku</h4>
+            <p>Public API from RAWG.io | Mohammad Rifki Indriawan | 20240040102</p>
+        </div>
+    </footer>
+
+    <!-- Modals -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="hideModals()">&times;</button>
+            <h3>Login</h3>
+            <input type="email" id="loginEmail" class="form-control" placeholder="Email">
+            <input type="password" id="loginPassword" class="form-control" placeholder="Password">
+            <button class="btn btn-primary" onclick="login()" id="loginBtn">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </button>
+        </div>
+    </div>
+
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="hideModals()">&times;</button>
+            <h3>Register</h3>
+            <input type="text" id="registerUsername" class="form-control" placeholder="Username">
+            <input type="email" id="registerEmail" class="form-control" placeholder="Email">
+            <input type="password" id="registerPassword" class="form-control" placeholder="Password">
+            <button class="btn btn-primary" onclick="register()" id="registerBtn">
+                <i class="fas fa-user-plus"></i> Register
+            </button>
+        </div>
+    </div>
+
+    <!-- Templates -->
+    <template id="gameCardTemplate">
+        <div class="game-card">
+            <img class="game-image" alt="Game Image">
+            <div class="game-content">
+                <h4 class="game-title"></h4>
+                <div class="game-rating"><i class="fas fa-star"></i> <span class="rating-value"></span>/5</div>
+                <div class="game-meta">
+                    <span><i class="fas fa-calendar-alt"></i> <span class="release-date"></span></span>
+                </div>
+                <div class="game-actions">
+                    <button class="favorite-btn"><i class="fas fa-heart"></i> Favorite</button>
+                    <button class="wishlist-btn"><i class="fas fa-star"></i> Wishlist</button>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="profileGameCardTemplate">
+        <div class="game-card">
+            <img class="game-image" alt="Game Image">
+            <div class="game-content">
+                <h4 class="game-title"></h4>
+                <div class="game-rating"><i class="fas fa-star"></i> <span class="rating-value"></span>/5</div>
+                <div class="game-actions">
+                    <button class="remove-btn"><i class="fas fa-trash"></i> Remove</button>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="recentlyViewedCardTemplate">
+        <div class="game-card">
+            <img class="game-image" alt="Game Image">
+            <div class="game-content">
+                <h4 class="game-title"></h4>
+                <div class="game-rating"><i class="fas fa-star"></i> <span class="rating-value"></span>/5</div>
+                <div class="viewed-at">
+                    <i class="fas fa-clock"></i> Viewed: <span class="viewed-time"></span>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="azGameItemTemplate">
+        <div class="az-game-item">
+            <h4 class="az-game-title"></h4>
+            <button class="btn btn-primary btn-sm view-game-btn">
+                <i class="fas fa-eye"></i> View
+            </button>
+        </div>
+    </template>
+
+    <template id="gameDetailsTemplate">
+        <div class="game-details-content">
+            <div class="game-back-button">
+                <button class="btn btn-secondary" onclick="goBack()">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+            </div>
+            
+            <div class="game-header">
+                <div class="game-hero">
+                    <img id="gameHeroImage" alt="Game Image">
+                </div>
+                <div class="game-info">
+                    <h1 id="gameDetailTitle"></h1>
+                    <div class="game-rating-large">
+                        <i class="fas fa-star"></i>
+                        <span id="gameDetailRating"></span>/5
+                    </div>
+                    <div class="game-meta-large">
+                        <div><i class="fas fa-calendar-alt"></i> Released: <span id="gameReleaseDate"></span></div>
+                        <div><i class="fas fa-clock"></i> Playtime: <span id="gamePlaytime"></span> hours</div>
+                        <div><i class="fas fa-user-shield"></i> ESRB: <span id="gameEsrb"></span></div>
+                    </div>
+                    
+                    <div class="game-actions-large">
+                        <button class="btn btn-primary" id="gameFavoriteBtn">
+                            <i class="fas fa-heart"></i> Add to Favorites
+                        </button>
+                        <button class="btn btn-secondary" id="gameWishlistBtn">
+                            <i class="fas fa-star"></i> Add to Wishlist
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="game-details-body">
+                <div class="game-section">
+                    <h3>Description</h3>
+                    <div class="game-description" id="gameDescription"></div>
+                </div>
+                
+                <div class="game-info-simple">
+                    <div class="info-item">
+                        <strong>Platform:</strong> <span id="gamePlatformsSimple"></span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Genre:</strong> <span id="gameGenresSimple"></span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Developer:</strong> <span id="gameDevelopersSimple"></span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Publisher:</strong> <span id="gamePublishersSimple"></span>
+                    </div>
+                </div>
+                
+                <div class="game-section" id="screenshotsSection" style="display: none;">
+                    <h3>Screenshots</h3>
+                    <div class="screenshots-grid" id="gameScreenshots"></div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <script src="script.js"></script>
+</body>
+</html>
